@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>班级通讯录</title>
+<script language="javascript" src="js/myCookie.js"></script>
+<script language="javascript" src="js/template.js"></script>
+<textarea id="cart_jst" style="display:none;"> 
+<h1>${list[0].class}</h1>
+<table border="1">
+    <tr>
+        <td>学号</td>
+        <td>姓名</td>
+        <td>入学年份</td>
+        <td>院系</td>
+        <td>班级</td>
+        <td>电话</td>
+        <td>email</td>
+        <td>微信号</td>
+     </tr>
+     {for p in list}
+     <tr>
+     	<td>${p.ID}</td><td>${p.name}</td><td>${p.grade}</td>
+        <td>${p.department}</td><td>${p.class}</td><td>${p.phone}</td><td>${p.email}</td><td>${p.wechat}</td>
+     </tr>
+     {/for}
+</table>
+</textarea>
+</head>
+
+<body>
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+<div id="content"></div>
+</h1>
+<script>
+var str="password="+getMyCookie().password+"&id="+getMyCookie().id;
+transform("back/addr_list.php",str, function (xmlhttp) {
+ 	if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	{
+		var content=xmlhttp.responseText;
+		var result = TrimPath.processDOMTemplate("cart_jst", JSON.parse(content));
+		document.getElementById("content").innerHTML=result;
+	}
+} );
+</script>
+<p><a href="index.html">返回</a></p>
+</body>
+</html>

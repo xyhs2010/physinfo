@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>学术活动</title>
+<script language="javascript" src="js/myCookie.js"></script>
+<script language="javascript" src="js/template.js"></script>
+<textarea id="cart_jst" style="display:none;"> 
+<fieldset>
+<legend>${name}</legend>
+<ul>
+{for p in content}
+<li>${p[1]} ${p[0]}</li>
+{/for}
+</ul>
+</fieldset>
+</textarea>
+
+<script language="javascript">
+function $_GET(q) { 
+	s = window.location.search; 
+	if(s.substring(1,5) == 'cont') {
+		return s.substring(6);
+	}
+	return false;
+}
+function getsub() {
+	//获取订阅记录
+	var str="password="+getMyCookie().password+"&id="+getMyCookie().id+"&sub=";
+	var tmp = "";
+	for (i = 0; i < 3; i++) {
+		if (document.getElementById(String(i)).checked)
+		{
+			tmp=tmp+'-'+String(i);
+		}
+	}
+	str = str + tmp.substring(1);
+	//alert(str);
+	transform("http://114.215.108.145/back/lectures.php",str, function (xmlhttp) {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			document.getElementById('get').innerHTML="";
+			//alert(xmlhttp.responseText);
+			sessionStorage.cont=xmlhttp.responseText;
+			var contents=JSON.parse(xmlhttp.responseText);
+			var x = false;
+			for (x in contents[0])
+			{
+				var result = TrimPath.processDOMTemplate("cart_jst", contents[1][x]);
+				//alert(JSON.stringify(content[x]));
+				var node = document.createElement("p");
+				node.innerHTML=result;
+				//var node=document.createTextNode(result);
+				document.getElementById('get').appendChild(node);
+			}
+		}
+	} );
+}
+</script>
+</head>
+
+<body>
+<div id="fiexd-header">
+
+  <p id="hm">PHYS INFO</p>
+
+</div>
+<!--是否GET网页-->
+<script>
+if($_GET('cont'))
+{
+	var str="cont="+$_GET('cont');
+	transform("back/lectures.php",str, function (xmlhttp) {
+		if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			var contid=xmlhttp.responseText;
+			var result = TrimPath.processDOMTemplate("cart_jst", JSON.parse(contid));
+			document.getElementById('content').innerHTML=result+"<p><a href=\"lectures.html\">返回</a></p>";
+			var parent1=document.getElementById("back");
+			parent1.removeChild(document.getElementById("backIndex"));
+		}
+	} );
+}
+</script>
+<!--主框架-->
+<div id="content">
+	<fieldset id="browse">
+		<legend>浏览</legend>
+            <p><a href="lectures.html?cont=0">物理系</a></p>
+            <p><a href="lectures.html?cont=1">高等研究院</a></p>
+            <p><a href="lectures.html?cont=2">低维量子实验室</a></p>
+            <!-- <p><a href="lectures.html?cont=3">综合通告</a></p> -->
+            <!-- <p><a href="lectures.html?cont=4">教务信息</a></p> -->
+    </fieldset>
+    <fieldset id="subscribe">
+		<legend>订阅</legend>
+        <input id="0" type="checkbox"/><a href="lectures.html?cont=0">物理系</a>
+        <input id="1" type="checkbox"/><a href="lectures.html?cont=1">高等研究院</a>
+        <input id="2" type="checkbox"/><a href="lectures.html?cont=2">低维量子实验室</a>
+        <!-- <input id="3" type="checkbox"/><a href="lectures.html?cont=3">综合通告</a> -->
+        <!-- <input id="4" type="checkbox"/><a href="lectures.html?cont=4">教务信息</a> -->
+    <p><button type="button" onclick="getsub()">确 定</button></p>
+    </fieldset>
+	<div id="get"></div>
+</div>
+<p id="back"><a href="index.html" id="backIndex">返回</a></p>
+<script>
+var parent=document.getElementById("content");
+if($_GET('cont'))
+{
+	parent.removeChild(document.getElementById("browse"));
+	parent.removeChild(document.getElementById("subscribe"));
+}
+else if(getMyCookie())
+{
+	if (sessionStorage.cont)
+	{
+		parent.removeChild(document.getElementById("browse"));
+		contents = JSON.parse(sessionStorage.cont);
+		var x = false;
+		for (x in contents[0])
+		{
+			document.getElementById(contents[0][x].toString()).checked=true;
+			var result = TrimPath.processDOMTemplate("cart_jst", contents[1][x]);
+			//alert(JSON.stringify(content[x]));
+			var node = document.createElement("p");
+			node.innerHTML=result;
+			document.getElementById('get').appendChild(node);
+		}
+	}
+	else
+	{
+		parent.removeChild(document.getElementById("browse"));
+		var str="password="+getMyCookie().password;
+		transform("http://114.215.108.145/back/lectures.php",str, function (xmlhttp) {
+			if (xmlhttp.readyState==4 && xmlhttp.status==200)
+			{
+				document.getElementById('get').innerHTML="";
+				//alert(xmlhttp.responseText);
+				sessionStorage.cont=xmlhttp.responseText;
+				var contents=JSON.parse(xmlhttp.responseText);
+				var x = false;
+				for (x in contents[0])
+				{
+					document.getElementById(contents[0][x].toString()).checked=true;
+					var result = TrimPath.processDOMTemplate("cart_jst", contents[1][x]);
+					//alert(JSON.stringify(content[x]));
+					var node = document.createElement("p");
+					node.innerHTML=result;
+					//var node=document.createTextNode(result);
+					document.getElementById('get').appendChild(node);
+				}
+			}
+		} );
+	}
+}
+else
+{
+	parent.removeChild(document.getElementById("subscribe"));
+	document.getElementById("backIndex").innerHTML="登录";
+}
+</script>
+</body>
+</html>

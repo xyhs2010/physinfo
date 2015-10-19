@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>用户登录</title>
+<script language="javascript" src="js/md5.js"></script>
+<script language="javascript" src="js/myCookie.js"></script>
+</head>
+
+<body>
+<script>
+function loadXMLDoc()
+{
+	var LoginForm = document.getElementById('Loginform');
+	if (LoginForm.id.value == "")
+	{
+	alert("请输入学号!");
+	LoginForm.id.focus();
+	return (false);
+	}
+	if (LoginForm.password.value == "")
+	{
+	alert("请输入密码!");
+	LoginForm.password.focus();
+	return (false);
+	}
+	var str = "id="+LoginForm.id.value+"&password="+faultylabs.MD5(LoginForm.password.value);
+	var xmlhttp = make_xmlhttp(LoginForm);
+	xmlhttp.open("POST","back/login.php",true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	xmlhttp.send(str);
+}
+
+function make_xmlhttp(LoginForm)
+{
+	var xmlHttp = false;
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+	xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==1)
+		{
+		document.getElementById("state").innerHTML="wait a minute";
+		}
+		if (xmlhttp.readyState==4 )
+		{
+			if (xmlhttp.status==200)
+			{
+				Text = xmlhttp.responseText;
+				if (Text=="success")
+				{
+				    setMyCookie(LoginForm.id.value, faultylabs.MD5(LoginForm.password.value),1);
+					window.location.assign("index.html");
+				}
+				else
+				{
+					document.getElementById("state").innerHTML=Text;
+				}
+			}
+			else
+			{
+				alert("Transform Error:"+xmlhttp.status.toString());
+			}
+		}
+	}
+	return xmlhttp;
+}
+
+</script>
+
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+<div>
+<fieldset>
+<legend>用户登录</legend>
+<form id="Loginform" >
+<p>
+<label for="id" class="label">学号:</label>
+<input id="id" name="id" type="text" class="input" />
+</p>
+<p>
+<label for="password" class="label">密码:</label>
+<input id="password" name="password" type="password" class="input" />
+</p>
+</form>
+<p>
+<button type="button" onclick="loadXMLDoc()">确 定</button>
+</p>
+<div id="state"></div>
+
+<a href="reg.html">注册</a>
+</fieldset>
+</div>
+</body>
+</html>

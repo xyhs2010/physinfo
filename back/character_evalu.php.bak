@@ -1,0 +1,29 @@
+<?php 
+header('Access-Control-Allow-Origin: *');
+if(!isset($_POST['password'])){
+    exit('Wrong!');
+}
+$password = MD5(trim($_POST['password']));
+$id = htmlspecialchars(trim($_POST['id']));
+$opt = htmlspecialchars(trim($_POST['opt']));
+
+include('../Connections/phys_ims.php');
+mysql_select_db($database_phys_ims, $phys_ims);
+
+if($opt == 'obtain')
+{
+    $sql = "select class from basic_info where id='$id'";
+    $result = mysql_query($sql, $phys_ims) or die('Query failed: ' . mysql_error());
+    $line1 = mysql_fetch_array($result, MYSQL_ASSOC);
+    $class = $line1['class'];
+    
+    $sql = "select id, name from basic_info where class='$class'";
+    $result = mysql_query($sql, $phys_ims) or die('Query failed: ' . mysql_error());
+    $list = array();
+    while($line = mysql_fetch_array($result, MYSQL_ASSOC))
+    {
+    	array_push($list, $line);
+    }
+    echo json_encode(list);
+}
+?>

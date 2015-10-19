@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="../basic.css" type="text/css" >
+<script language="javascript" src="../js/myCookie.js"></script>
+    <meta charset="UTF-8">
+    <title>素测成绩及学分绩</title>
+</head>
+<body>
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+    <p>作为参考，2014级本科生大约分配高额奖学金11人，普通奖学金13人（不包括社会工作奖等委托团委学生会评选的奖项）。
+<fieldset>
+<legend style='font-style:italic;'>素测成绩</legend>
+    <p>社会责任感与集体观念: <span id='respons'></span></p>
+    <p>公民道德意识: <span id='moral'></span></p>
+    <p>社会交往能力: <span id='social'></span></p>
+    <p>生活态度: <span id='life'></span></p>
+    <p>学习态度: <span id='study'></span></p>
+    <p>文化素质: <span id='quality'></span></p>
+    <p>科创成果: <span id='science'></span></p>
+    <p>体育活动: <span id='pe'></span></p>
+    <p>社会工作: <span id='social_work'></span></p>
+    <p>社会实践: <span id='practice'></span></p>
+    <p>公益事业: <span id='service'></span></p>
+    <h2>素测成绩: <span id='grade'></span></h2>
+    <p style='color: gray;'>说明：素测成绩E为优，G为良，P为一般，F为不合格。En表示素测成绩为班级第n名。<br>每个班级获得E的人数小于等于总人数的1/4，获得G的人数小于等于总人数的1/2。</p>
+</fieldset>
+
+<fieldset>
+    <legend style='font-style:italic;'>学分绩</legend>
+    <p>学分绩: <span id='gpa'></span></p>
+    <h2>学分绩排名: <span id='rank'></span></h2>
+    <p style='color: gray;'>说明：学分绩及排名为物理系教务提供的最新版，考虑了成绩复议后的学分绩变化。</p>
+</fieldset>
+    
+<p><a href="../index.html">返回</a></p>
+
+<script>
+var str="password="+getMyCookie().password+"&id="+getMyCookie().id;
+transform("eval_result.php",str, function (xmlhttp) {
+ 	if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	{
+		var content=xmlhttp.responseText;
+//        alert(content);
+        var obj=JSON.parse(content);
+        for (var i in obj) {
+            if (i!='id') {
+                document.getElementById(i).innerHTML=obj[i];
+            }
+        }
+	}
+} );
+</script>
+    
+</body>
+</html>

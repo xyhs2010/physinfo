@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<style>
+    [type="text"]{
+        font-size: 2.3rem;
+        width: 40%;
+    }
+    h1 {
+        font-size: 2.3rem;
+        padding-bottom: 1em;
+    }
+    [type="radio"] {
+        width: 2.5em;
+        height: 2.5em;
+        padding:0;
+    }
+    button {
+        font-size: 3em;
+        padding:0.2em;
+    }
+    label {
+        font-size: 1.3em;
+        margin-right: 3em;
+    }
+</style>
+    <meta charset="UTF-8">
+    <title>素质测评</title>
+<script language="javascript" src="js/myCookie.js"></script>
+</head>
+<body>
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+<!-- <div style="height:1em; text-overflow:ellipsis"> -->
+<p style="color:red;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:larger" id="unfilled"></p>
+<div style="padding-bottom:2em">
+    <h1>被评价同学：
+    <select type="text" name="list" onchange="change()" style="height:10" id="list">
+    </select>
+    </h1>
+    <div id="item1">
+        <h2>社会责任感与集体观念</h2>
+        <p class="intro">该同学是否具有正确的政治观念、崇高的理想信念，是否乐于奉献、是否具有较强的大局观和集体意识，及是否有强烈的集体荣誉感。</p>
+        <label for=""><input type="radio" name="i1" value="1">1</label>
+        <label for=""><input type="radio" name="i1" value="2">2</label>
+        <label for=""><input type="radio" name="i1" value="3">3</label>
+        <label for=""><input type="radio" name="i1" value="4">4</label>
+        <label for=""><input type="radio" name="i1" value="5">5</label>
+    </div>
+    <div id="item2">
+        <h2>公民道德意识</h2>
+        <p class="intro">该同学为人是否诚信，是否恪守法律法规，对公民权利与义务的认识是否明确。</p>
+        <label for=""><input type="radio" name="i2" value="1">1</label>
+        <label for=""><input type="radio" name="i2" value="2">2</label>
+        <label for=""><input type="radio" name="i2" value="3">3</label>
+        <label for=""><input type="radio" name="i2" value="4">4</label>
+        <label for=""><input type="radio" name="i2" value="5">5</label>
+    </div>
+    <div id="item3">
+        <h2>社会交往能力</h2>
+        <p class="intro">该同学与他人相处的方式方法，包括待人是否友善，是否遵从社交礼仪等。</p>
+        <label for=""><input type="radio" name="i3" value="1">1</label>
+        <label for=""><input type="radio" name="i3" value="2">2</label>
+        <label for=""><input type="radio" name="i3" value="3">3</label>
+        <label for=""><input type="radio" name="i3" value="4">4</label>
+        <label for=""><input type="radio" name="i3" value="5">5</label>
+    </div>
+    <div id="item4">
+        <h2>生活态度</h2>
+        <p class="intro">该同学的身心健康程度，是否拥有积极的人生观、价值观，是否能为周围的伙伴带来积极影响。</p>
+        <label for=""><input type="radio" name="i4" value="1">1</label>
+        <label for=""><input type="radio" name="i4" value="2">2</label>
+        <label for=""><input type="radio" name="i4" value="3">3</label>
+        <label for=""><input type="radio" name="i4" value="4">4</label>
+        <label for=""><input type="radio" name="i4" value="5">5</label>
+    </div>
+    <div id="item5">
+        <h2>学习态度</h2>
+        <p class="intro">该同学对学业的重视程度及学习努力程度。</p>
+        <label for=""><input type="radio" name="i5" value="1">1</label>
+        <label for=""><input type="radio" name="i5" value="2">2</label>
+        <label for=""><input type="radio" name="i5" value="3">3</label>
+        <label for=""><input type="radio" name="i5" value="4">4</label>
+        <label for=""><input type="radio" name="i5" value="5">5</label>
+    </div>
+    <div id="item6">
+        <h2>文化素养</h2>
+        <p class="intro">该同学对文化、艺术作品的思想性、艺术性、观赏性的认知程度，对低俗内容、偏激观念的自觉抵制能力。</p>
+        <label for=""><input type="radio" name="i6" value="1">1</label>
+        <label for=""><input type="radio" name="i6" value="2">2</label>
+        <label for=""><input type="radio" name="i6" value="3">3</label>
+        <label for=""><input type="radio" name="i6" value="4">4</label>
+        <label for=""><input type="radio" name="i6" value="5">5</label>
+    </div>
+</div>
+<div style="text-align:center;">
+    <label id="state" style="color:#CC9999"></label><br />
+    <button type="button" onclick="update()" style="margin:10px 20px 10px 0">提 交</button>
+</div>
+<script>
+
+        var str = "password=" + getMyCookie().password + "&id="+ getMyCookie().id + "&opt=obtain";
+        var list = new Array();
+        transform("back/character_evalu.php", str, function(xmlhttp) {
+            if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+                list = JSON.parse(xmlhttp.responseText);
+                var obj = document.getElementById('list');
+                for (var i = 0; i < list.length; i++) {
+                    if (list[i].id != getMyCookie().id) {
+                        var opt = document.createElement("option");
+                        var opt = new Option(list[i].name, i);
+                        obj.options.add(opt);
+//                        opt.innerText = list[i].name;
+//                        opt.value = i;
+//                        obj.appendChild(opt);
+                    }
+//                    else {
+//                        list.splice(i,1);
+//                    }
+                }
+                change();
+                list_unfilled();
+            }
+        } );
+
+function list_unfilled() {
+    unfilled = new Array();
+    for (var i = 0; i < list.length; i++) {
+        if (list[i].id != getMyCookie().id && list[i].filled == "no") {
+            unfilled.push(list[i].name);
+        }
+    }
+    if (unfilled.length == 0) {
+        document.getElementById('unfilled').innerHTML = "";
+        } else {
+        unfilled_names = unfilled.join(', ');
+        unfilled_text = "待评价：" + unfilled_names;
+        document.getElementById('unfilled').innerHTML = unfilled_text;
+    }
+}
+
+function update() {
+    var scores = new Array();
+    for (var j = 1; j <= 6; j++) {
+        for (var i = 0; i < 5; i++) {
+            var tmp = document.getElementsByName("i" + j)[i];
+            if (tmp.checked == true) {
+                scores[j - 1] = tmp.value;
+            }
+        }
+        if (scores[j - 1] == null) {
+            alert('Please complete the invertory');
+            return;
+        }
+    }
+    var obj = document.getElementById('list');
+    var reviewee = list[obj.value].id;
+    var str = "password=" + getMyCookie().password + "&id="+ getMyCookie().id + "&opt=update&reviewee=" + reviewee + "&respons=" + scores[0] + "&moral=" + scores[1] + "&social=" + scores[2] + "&life=" + scores[3] + "&study=" + scores[4] + "&quality=" + scores[5];
+    transform("back/character_evalu.php",str, function (xmlhttp) {
+        if (xmlhttp.readyState==1)
+        {
+            document.getElementById("state").innerHTML="正在提交";
+        }
+         else if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            if (xmlhttp.responseText == "success") {
+//                obj.value = parseInt(obj.value) + 1;
+                setTimeout("pause()",1000);
+                document.getElementById("state").innerHTML="提交成功";
+                list[obj.value].filled = "yes";
+                list_unfilled();
+            }
+            else {
+                document.getElementById("state").innerHTML="提交错误";
+            }
+        }
+    } );
+}
+
+function change() {
+    var obj = document.getElementById('list');
+    var reviewee = list[obj.value].id;
+    var str = "password=" + getMyCookie().password + "&id="+ getMyCookie().id + "&opt=change&reviewee=" + reviewee;
+    transform("back/character_evalu.php",str, function (xmlhttp) {
+        if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        {
+            if (xmlhttp.responseText == 'none') {
+                for (var i=0;i<5;i++) {
+                    document.getElementsByName("i1")[i].checked=false;
+                    document.getElementsByName("i2")[i].checked=false;
+                    document.getElementsByName("i3")[i].checked=false;
+                    document.getElementsByName("i4")[i].checked=false;
+                    document.getElementsByName("i5")[i].checked=false;
+                    document.getElementsByName("i6")[i].checked=false;
+                }
+            } else {
+                var content = JSON.parse(xmlhttp.responseText);
+                document.getElementsByName("i1")[parseInt(content['respons'])-1].checked=true;
+                document.getElementsByName("i2")[parseInt(content['moral'])-1].checked=true;
+                document.getElementsByName("i3")[parseInt(content['social'])-1].checked=true;
+                document.getElementsByName("i4")[parseInt(content['life'])-1].checked=true;
+                document.getElementsByName("i5")[parseInt(content['study'])-1].checked=true;
+                document.getElementsByName("i6")[parseInt(content['quality'])-1].checked=true;
+            }
+        }
+    });
+}
+
+function pause() {
+                document.getElementById("state").innerHTML="";
+}
+</script>
+
+<p><a href="index.html">返回</a></p>
+</body>
+</html>

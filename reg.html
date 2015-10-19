@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>用户注册</title>
+<script language="javascript" src="js/myCookie.js"></script>
+<script language="javascript" src="js/md5.js"></script>
+<script language=JavaScript>
+var xmlHttp = false;
+function loadXMLDoc()
+{
+	RegForm = document.getElementById('RegForm');
+	if (RegForm.id.value == "")
+	{
+	alert("学号不可为空!");
+	RegForm.id.focus();
+	return (false);
+	}
+	if (RegForm.username.value == "")
+	{
+	alert("用户名不可为空!");
+	RegForm.username.focus();
+	return (false);
+	}
+	if (RegForm.password.value == "")
+	{
+	alert("必须设定登录密码!");
+	RegForm.password.focus();
+	return (false);
+	}
+	if (RegForm.repass.value != RegForm.password.value)
+	{
+	alert("两次密码不一致!");
+	RegForm.repass.focus();
+	return (false);
+	}
+	if (RegForm.email.value == "")
+	{
+	alert("电子邮箱不可为空!");
+	RegForm.email.focus();
+	return (false);
+	}
+	if (window.XMLHttpRequest)
+	{// code for IE7+, Firefox, Chrome, Opera, Safari
+	xmlhttp=new XMLHttpRequest();
+	}
+	else
+	{// code for IE6, IE5
+	xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+	xmlhttp.onreadystatechange=function()
+	{
+		if (xmlhttp.readyState==1)
+		{
+		document.getElementById("state").innerHTML="wait a minute\n";
+		}
+		if (xmlhttp.readyState==4 )
+		{
+			if (xmlhttp.status==200)
+			{
+				var Text = xmlhttp.responseText;
+				if (Text=="success" )
+				{
+					alert("注册成功！转入登录页面")
+					window.location.assign("login.html");
+				}
+				else
+				{
+					document.getElementById("state").innerHTML=Text;
+				}
+			}
+			else
+			{
+				document.getElementById("state").innerHTML="Error:"+xmlhttp.status.toString();
+			}
+		}
+	}
+	xmlhttp.open("POST","back/reg.php",true);
+	xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+	var str = "id="+RegForm.id.value+"&username="+RegForm.username.value+"&passwd="+faultylabs.MD5(RegForm.password.value)+"&email="+RegForm.email.value;
+	xmlhttp.send(str);
+}
+</script>
+</head>
+
+<body>
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+<fieldset>
+<legend>用户注册</legend>
+
+<form id="RegForm" >
+<p>
+<label for="id" class="label">学号:</label>
+<input id="id" name="id" type="text" class="input" />
+<span>(必填，10位数字)</span>
+<p/>
+<p>
+<label for="username" class="label">姓名:</label>
+<input id="username" name="username" type="text" class="input" />
+<span>(必填，3-15字符长度，请填写真实姓名)</span>
+<p/>
+<p>
+<label for="password" class="label">密 码:</label>
+<input id="password" name="password" type="password" class="input" />
+<span>(必填，不得少于6位)</span>
+<p/>
+<p>
+<label for="repass" class="label">重复密码:</label>
+<input id="repass" name="repass" type="password" class="input" />
+<p/>
+<p>
+<label for="email" class="label">电子邮箱:</label>
+<input id="email" name="email" type="text" class="input" />
+<span>(必填)</span>
+<p/>
+</form>
+<p>
+<button type="button" onclick="loadXMLDoc()">提交注册</button>
+</p>
+<div id="state"></div>
+
+<a href="login.html">登录</a>
+</fieldset>
+
+</body>
+</html>

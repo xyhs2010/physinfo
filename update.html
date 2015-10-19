@@ -1,0 +1,276 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<style>
+    .imple {
+        color: gray;
+        font-size: small;
+    }
+</style>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人信息维护</title>
+<script language="javascript" src="js/myCookie.js"></script>
+<script language="javascript" src="js/md5.js"></script>
+
+</head>
+
+<body>
+<script>
+</script>
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+
+<fieldset>
+<legend>基本信息</legend>
+<form id="form1">
+    <label>姓名：</label>
+    <input type="text" name="name" id="name" value=""/>
+    
+    <br />
+    <label>年级：</label>
+    <select type="text" name="grade" style="height:5" id="grade">
+    <script>
+    for (var i=2001;i<2020;i++)
+    {
+		document.write("<option id=\""+i.toString()+"\">"+i+"</option>");
+    }
+    </script>
+    </select>
+    <br />
+    <label>
+    院系：</label>
+    <input type="text" name="department" id="department"  value=""/>
+    <label class="imple">example:物理,数学,计算机...</label>
+    
+    <br />
+    <label>
+    班级：</label>
+    <input type="text" name="class" id="class"  value=""/>
+    <label class="imple">example:物理41,基科41...</label>
+    
+    <br />
+    <button type="button" onclick="update1()" style="margin:10px 20px 10px 0">提 交</button><label id="state1" style="color:#CC9999"></label>
+</form>
+</fieldset>
+<br/ >
+<script>
+var form1 = document.getElementById('form1');
+var str="no=1"+"&password="+getMyCookie().password+"&id="+getMyCookie().id;
+transform("back/update.php",str, function (xmlhttp) {
+ 	if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	{
+		var content = JSON.parse(xmlhttp.responseText);
+		document.getElementById("name").value=content.name;
+		if (content.grade) {
+			document.getElementById(content.grade).selected="selected";
+		}
+		document.getElementById("department").value=content.department;
+		document.getElementById("class").value=content.class;
+	}
+} );
+function update1() {
+	var str="no=1"+"&password="+getMyCookie().password+"&name="+document.getElementById("name").value+"&grade="+document.getElementById("grade").value+"&department="+document.getElementById("department").value+"&class="+document.getElementById("class").value+"&id="+getMyCookie().id;
+	//alert(str);
+	transform("back/update.php",str, function (xmlhttp) 
+	{
+		if (xmlhttp.readyState==1)
+		{
+			document.getElementById("state1").innerHTML="正在提交";
+		}
+		else if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			if(xmlhttp.responseText=="success")
+			{
+				document.getElementById("state1").innerHTML="信息已更新";
+			}
+			else 
+			{
+				alert(xmlhttp.responseText);
+			}
+		}
+	} );
+}
+</script>
+
+<fieldset>
+<legend>联系方式</legend>
+<form id="form2">
+    <label>手机：</label>
+    <input type="text" name="phone" id="phone" value=""/>
+    <br />
+    <label>
+    邮箱：</label>
+    <input type="text" name="email" id="email"  value=""/>
+    <br />
+    <label>
+    微信：</label>
+    <input type="text" name="wechat" id="wechat"  value=""/>
+    
+    <br />
+    <button type="button" onclick="update2()" style="margin:10px 20px 10px 0">提 交</button><label id="state2" style="color:#CC9999"></label>
+</form>
+</fieldset>
+
+<script>
+var form2 = document.getElementById('form2');
+var str="no=2"+"&password="+getMyCookie().password+"&id="+getMyCookie().id;
+transform("back/update.php",str, function (xmlhttp) {
+ 	if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	{
+		var content = JSON.parse(xmlhttp.responseText);
+		document.getElementById("phone").value=content.phone;
+		document.getElementById("email").value=content.email;
+		document.getElementById("wechat").value=content.wechat;
+	}
+} );
+function update2()
+{
+	var str="no=2"+"&password="+getMyCookie().password+"&phone="+document.getElementById("phone").value+"&email="+document.getElementById("email").value+"&wechat="+document.getElementById("wechat").value+"&id="+getMyCookie().id;
+	transform("back/update.php",str, function (xmlhttp) 
+	{
+		if (xmlhttp.readyState==1)
+		{
+			document.getElementById("state2").innerHTML="正在提交";
+		}
+		else if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			if(xmlhttp.responseText=="success")
+			{
+				document.getElementById("state2").innerHTML="信息已更新";
+			}
+			else 
+			{
+				alert(xmlhttp.responseText);
+			}
+		}
+	} );
+}
+</script>
+<br/ >
+
+<fieldset>
+<legend>地域</legend>
+<form id="form3">
+    <label>国家：</label>
+    <input type="text" name="country" id="country" value=""/>
+    <br />
+    <label>
+    省份：</label>
+    <select type="text" name="province" style="height:5" id="province">
+	<script>
+	var provs=new Array("河北省","山西省","辽宁省","吉林省","黑龙江省","江苏省","浙江省","安徽省","福建省","江西省","山东省","河南省","湖北省","湖南省","广东省","海南省","四川省","贵州省","云南省","陕西省","甘肃省","青海省","台湾省","内蒙古自治区","广西壮族自治区","西藏自治区","宁夏回族自治区","新疆维吾尔自治区","香港特别行政区","澳门特别行政区");
+    for (var i=0;i<provs.length;i++)
+    {
+		document.write("<option id=\""+provs[i]+"\">"+provs[i]+"</option>");
+    }
+    </script>
+    </select>
+    <br />
+    <label>
+    高中：</label>
+    <input type="text" name="mid_sch" id="mid_sch"  value=""/>
+    
+    <br />
+    <button type="button" onclick="update3()" style="margin:10px 20px 10px 0">提 交</button><label id="state3" style="color:#CC9999"></label>
+</form>
+</fieldset>
+
+<script>
+var form3 = document.getElementById('form3');
+var str="no=3"+"&password="+getMyCookie().password+"&id="+getMyCookie().id;
+transform("back/update.php",str, function (xmlhttp) {
+ 	if (xmlhttp.readyState==4 && xmlhttp.status==200)
+	{
+		var content = JSON.parse(xmlhttp.responseText);
+		document.getElementById("country").value=content.country;
+		if (content.province) {
+			document.getElementById(content.province).selected="selected";
+		}
+		document.getElementById("mid_sch").value=content.mid_sch;
+	}
+} );
+function update3() {
+	var str="no=3"+"&password="+getMyCookie().password+"&country="+document.getElementById("country").value+"&province="+document.getElementById("province").value+"&mid_sch="+document.getElementById("mid_sch").value+"&id="+getMyCookie().id;
+	//alert(str);
+	transform("back/update.php",str, function (xmlhttp) 
+	{
+		if (xmlhttp.readyState==1)
+		{
+			document.getElementById("state3").innerHTML="正在提交";
+		}
+		else if (xmlhttp.readyState==4 && xmlhttp.status==200)
+		{
+			if(xmlhttp.responseText=="success")
+			{
+				document.getElementById("state3").innerHTML="信息已更新";
+			}
+			else 
+			{
+				alert(xmlhttp.responseText);
+			}
+		}
+	} );
+}
+</script>
+
+<fieldset>
+    <legend>修改密码</legend>
+    <form id="field4">
+        <p>
+        <label for="oldPasswd">旧密码：</label>
+        <input type="password" name="oldPasswd" id="oldPasswd"/>
+        </p> <p>
+        <label for="newPasswd">新密码：</label>
+        <input type="password" name="newPasswd" id="newPasswd"/>
+        </p> <p>
+        <label for="repPasswd">重复新密码：</label>
+        <input type="password" name="repPasswd" id="repPasswd"/>
+        </p>
+    </form>
+    <button type="button" onclick="update4()" style="margin:10px 20px 10px 0">提 交</button><label id="state4" style="color:#CC9999"></label>
+</fieldset>
+
+<script>
+    function update4() {
+        field = document.getElementById('field4');
+        if (faultylabs.MD5(field.oldPasswd.value) != getMyCookie().password) {
+			document.getElementById("state4").innerHTML="旧密码不正确";
+            return;
+        } 
+        if (field.newPasswd.value == "") {
+            document.getElementById("state4").innerHTML="新密码不能为空";
+            return;
+        }
+        if (field.newPasswd.value != field.repPasswd.value) {
+            document.getElementById("state4").innerHTML="两次输入的新密码不相同";
+            return;
+        }
+        var str="no=4"+"&password="+getMyCookie().password+"&id="+getMyCookie().id+"&newpasswd="+faultylabs.MD5(field.newPasswd.value);
+        //alert(str);
+        transform("back/update.php",str, function (xmlhttp) 
+        {
+            if (xmlhttp.readyState==1)
+            {
+                document.getElementById("state4").innerHTML="正在提交";
+            }
+            else if (xmlhttp.readyState==4 && xmlhttp.status==200)
+            {
+                if(xmlhttp.responseText=="success")
+                {
+                    document.getElementById("state4").innerHTML="信息已更新";
+				    setMyCookie(getMyCookie().id, faultylabs.MD5(field.newPasswd.value),1);
+                }
+                else 
+                {
+                    alert(xmlhttp.responseText);
+                }
+            }
+        } );
+    }
+</script>
+
+<p><a href="index.html">返回</a></p>
+</body>
+</html>

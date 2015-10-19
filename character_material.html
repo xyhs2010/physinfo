@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<style>
+    [type="text"]{
+        width:70%;
+        font-size:large;
+    }
+    h1 {
+    }
+    button {
+        padding:0.2em;
+    }
+</style>
+    <meta charset="UTF-8">
+    <title>素测个人材料</title>
+<script language="javascript" src="js/myCookie.js"></script>
+</head>
+<body>
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+<fieldset>
+<legend>素测个人材料</legend>
+<p>（删除某条目只需将内容清空。）</p>
+<div id="science">
+<h2>科创成果</h2>
+<input type="text" name="science">
+<button type="button" onclick="add('science')">增加新条目</button>
+</div>
+<div id="pe">
+<h2>体育活动</h2>
+<input type="text" name="pe">
+<button type="button" onclick="add('pe')">增加新条目</button>
+</div>
+<div id="social_work">
+<h2>社会工作</h2>
+<input type="text" name="social_work">
+<button type="button" onclick="add('social_work')">增加新条目</button>
+</div>
+<div id="practice">
+<h2>社会实践</h2>
+<input type="text" name="practice">
+<button type="button" onclick="add('practice')">增加新条目</button>
+</div>
+<div id="service">
+<h2>公益事业</h2>
+<input type="text" name="service">
+<button type="button" onclick="add('service')">增加新条目</button>
+</div>
+<div id="work">
+<h2>工作实习</h2>
+<input type="text" name="work">
+<button type="button" onclick="add('work')">增加新条目</button>
+</div>
+<div id="strong">
+<h2>个人特长</h2>
+<input type="text" name="strong">
+<button type="button" onclick="add('strong')">增加新条目</button>
+</div>
+<div style="text-align:center;">
+    <label id="state" style="color:#CC9999"></label><br />
+    <button type="button" onclick="update()" style="margin:10px 20px 10px 0">提 交</button>
+</div>
+</fieldset>
+<script>
+    
+    var keywords = ['science', 'pe', 'social_work', 'practice', 'service', 'work', 'strong'];
+    var str = "password=" + getMyCookie().password + "&id="+ getMyCookie().id + "&opt=obtain";
+    transform("back/character_material.php",str, function (xmlhttp) {
+     	if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    	{
+            var content = JSON.parse(xmlhttp.responseText);
+            for (var i in keywords) {
+                var keyword = keywords[i];
+                var lists = JSON.parse(content[keyword]);
+                for (var j = 0; j < lists.length; j++) {
+                    lists[j] = htmlspecialchars_decode(lists[j]);
+                }
+                if (lists.length >= 1) {
+                    document.getElementsByName(keyword)[0].value = lists[0];
+                    for (var j = 1; j < lists.length; j++) {
+                        var father = document.getElementById(keyword);
+                        var input = document.createElement("input");
+                        father.appendChild(document.createElement("br"));
+                        father.appendChild(input);
+                        input.type = "text";
+                        input.name = keyword;
+                        input.value = lists[j];
+                    }
+                }
+            }
+    	}
+    } );
+
+    function add(keyword) {
+        var father = document.getElementById(keyword);
+        var input = document.createElement("input");
+        father.appendChild(document.createElement("br"));
+        father.appendChild(input);
+        input.type = "text";
+        input.name = keyword;
+    }
+
+    function update() {
+        var material = new Object();
+        for (j in keywords) {
+            var tmp = new Array();
+            var lists = document.getElementsByName(keywords[j]);
+            for (var i = 0; i < lists.length; i++) {
+                if (lists[i].value != "") {
+                    tmp.push(htmlspecialchars(lists[i].value));
+                }
+            }
+            material[keywords[j]] = JSON.stringify(tmp);
+        }
+    
+        var str = "password=" + getMyCookie().password + "&id="+ getMyCookie().id + "&opt=update";
+        for (j in keywords) {
+            str = str + "&" + keywords[j] + "=" + material[keywords[j]];
+        }
+    
+        transform("back/character_material.php",str, function (xmlhttp) {
+    	    if (xmlhttp.readyState==1)
+    		{
+    	    	document.getElementById("state").innerHTML="正在提交";
+    		}
+         	else if (xmlhttp.readyState==4 && xmlhttp.status==200)
+        	{
+                if (xmlhttp.responseText == "success") {
+    	    	    document.getElementById("state").innerHTML="";
+                }
+                else {
+    	        	document.getElementById("state").innerHTML="提交错误";
+                }
+        	}
+        } );
+    }
+
+</script>
+
+<p><a href="index.html">返回</a></p>
+</body>
+</html>

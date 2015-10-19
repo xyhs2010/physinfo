@@ -1,10 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+<link rel="stylesheet" href="basic.css" type="text/css" >
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>个人中心</title>
+<script language="javascript" src="js/myCookie.js"></script>
+<script language=JavaScript>
+function logout()
+{
+	delMyCookie();
+	//alert("成功注销，转入登录页面");
+	window.location.assign("login.html");
+}
+</script>
 </head>
+
 <body>
-   hello world! 
+<div id="fiexd-header">
+  <p id="hm">PHYS INFO</p>
+</div>
+
+<div id="welcome" style="margin:0 0 20px 0"></div>
+<fieldset>
+<legend>个人中心</legend>
+<div id='paren'>
+<p><a href="update.html">个人信息维护</a> </p>
+<p><a href="addr_list.html">班级通讯录</a></p>
+<p><a href="lectures.html">学术活动</a></p>
+<!-- <p><a href="character_evalu.html">素测互评</a></p> -->
+<p id='material'><a href="character_material.html">素测材料提交</a></p>
+<p id='eval_result'><a href="eval_result/eval_result.html">素测成绩及学分绩查询</a></p>
+</div>
+</fieldset>
+<p>点击此处 <a href="javascript:logout();">注销</a></p>
+
+<script>
+    if(getMyCookie() != null) {
+        document.getElementById("welcome").innerHTML=getMyCookie().id+"，欢脱的一天又开始了！";
+    }
+    else {
+        window.location.assign("login.html");
+    }
+</script>
+
 </body>
 </html>
